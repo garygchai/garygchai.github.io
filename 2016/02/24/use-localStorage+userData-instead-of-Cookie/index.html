@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>告别Cookie，拥抱localStorage+userData | GaryGao&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="引言故事发生在某天无所事事的下午，一位同事急冲冲跑过来跟我说，“用户观看艺人直播的数据，后端不存了，浪费空间，还是前端本地存储吧！”，我一想，可以呀，存Cookie嘛，我们一向都是这么干的！但是做到一半的时候，我突然领悟，用户的观看记录都存Cookie，那Cookie某天会不会爆掉？我这么闷骚，一天都能看十几个漂亮的主播，更何况比我骚的大有人在呢？一些跑骚的用户一天看个几十上百个用户不足为奇吧，数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="告别Cookie，拥抱localStorage+userData">
+<meta property="og:url" content="http://garygchai.github.io/2016/02/24/use-localStorage+userData-instead-of-Cookie/index.html">
+<meta property="og:site_name" content="GaryGao's blog">
+<meta property="og:description" content="引言故事发生在某天无所事事的下午，一位同事急冲冲跑过来跟我说，“用户观看艺人直播的数据，后端不存了，浪费空间，还是前端本地存储吧！”，我一想，可以呀，存Cookie嘛，我们一向都是这么干的！但是做到一半的时候，我突然领悟，用户的观看记录都存Cookie，那Cookie某天会不会爆掉？我这么闷骚，一天都能看十几个漂亮的主播，更何况比我骚的大有人在呢？一些跑骚的用户一天看个几十上百个用户不足为奇吧，数">
+<meta property="og:image" content="http://garygchai.github.io/img/localStorage+userData-instead-of-cookie/2011052411384081.jpg">
+<meta property="og:image" content="http://garygchai.github.io/img/localStorage+userData-instead-of-cookie/2011052411382518.jpg">
+<meta property="og:updated_time" content="2016-02-24T06:47:58.655Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="告别Cookie，拥抱localStorage+userData">
+<meta name="twitter:description" content="引言故事发生在某天无所事事的下午，一位同事急冲冲跑过来跟我说，“用户观看艺人直播的数据，后端不存了，浪费空间，还是前端本地存储吧！”，我一想，可以呀，存Cookie嘛，我们一向都是这么干的！但是做到一半的时候，我突然领悟，用户的观看记录都存Cookie，那Cookie某天会不会爆掉？我这么闷骚，一天都能看十几个漂亮的主播，更何况比我骚的大有人在呢？一些跑骚的用户一天看个几十上百个用户不足为奇吧，数">
+  
+    <link rel="alternative" href="/atom.xml" title="GaryGao&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" type="text/css">
+  
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/my-avatar.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/">Gary Gao</a></h1>
+        </hgroup>
+
+        
+                
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:garygchai@gmail.com" title="Email"></a></li>
+                            
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/garygchai/" title="GitHub"></a></li>
+                            
+                                <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/FIS/" style="font-size: 10px;">FIS</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NPM/" style="font-size: 10px;">NPM</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">没有最好，只有更好！</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Gary Gao</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/my-avatar.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Gary Gao</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:garygchai@gmail.com" title="Email"></a></li>
+                            
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/garygchai/" title="GitHub"></a></li>
+                            
+                                <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-use-localStorage+userData-instead-of-Cookie" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/02/24/use-localStorage+userData-instead-of-Cookie/" class="article-date">
+      <time datetime="2016-02-24T06:47:58.655Z" itemprop="datePublished">2016-02-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      告别Cookie，拥抱localStorage+userData
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/前端攻城/">前端攻城</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="u5F15_u8A00"><a href="#u5F15_u8A00" class="headerlink" title="引言"></a>引言</h3><p>故事发生在某天无所事事的下午，一位同事急冲冲跑过来跟我说，“用户观看艺人直播的数据，后端不存了，浪费空间，还是前端本地存储吧！”，我一想，可以呀，存Cookie嘛，我们一向都是这么干的！但是做到一半的时候，我突然领悟，用户的观看记录都存Cookie，那Cookie某天会不会爆掉？我这么闷骚，一天都能看十几个漂亮的主播，更何况比我骚的大有人在呢？一些跑骚的用户一天看个几十上百个用户不足为奇吧，数据量这么大，Cookie必然爆掉啊！Cookie虽然好用，但它也不是万能的，下面我们来聊聊前端本地存储~</p>
+<a id="more"></a>
+<h3 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h3><p>cookie 是存储于访问者的计算机中的变量。每当同一台计算机通过浏览器请求某个页面时，就会发送这个 cookie。你可以使用 JavaScript 来创建和取回 cookie 的值。对于前端本地存储来说，Cookie有它的优势，但是也一定的弊端；<br>优势：所有浏览器都支持，不同目录能共享cookie<br>弊端：同域内http请求都会带cookie，增加带宽和流量；有个数和大小限制。</p>
+<p><strong>以下就是关于各浏览器之间对cookie的不同限制：</strong></p>
+<table border="1" cellspacing="0" cellpadding="0" style="margin-left:0;"> <tr> <td valign="top" width="115">&nbsp;</td> <td valign="top" width="112"> <p align="center"><span lang="EN-US" xml:lang="EN-US">IE6.0</span></p> </td> <td valign="top" width="119"> <p align="center"><span lang="EN-US" xml:lang="EN-US">IE7.0/8.0</span></p> </td> <td valign="top" width="109"> <p align="center"><span lang="EN-US" xml:lang="EN-US">Opera</span></p> </td> <td valign="top" width="111"> <p align="center"><span lang="EN-US" xml:lang="EN-US">FF</span></p> </td> <td valign="top" width="111"> <p align="center"><span lang="EN-US" xml:lang="EN-US">Safari</span></p> </td> <td valign="top" width="115"> <p align="center"><span lang="EN-US" xml:lang="EN-US">Chrome</span></p> </td> </tr> <tr> <td width="115"> <p align="left"><span lang="EN-US" xml:lang="EN-US">cookie个数：</span></p> </td> <td width="112"> <p align="center">每个域<span lang="EN-US" xml:lang="EN-US">20个</span></p> </td> <td width="120"> <p align="center">每个域<span lang="EN-US" xml:lang="EN-US">50个</span></p> </td> <td width="109"> <p align="center">每个域<span lang="EN-US" xml:lang="EN-US">30个</span></p> </td> <td width="111"> <p align="center">每个域<span lang="EN-US" xml:lang="EN-US">50个</span></p> </td> <td width="111"> <p align="center">没有限制</p> </td> <td width="115"> <p align="center">每个域<span lang="EN-US" xml:lang="EN-US">53个</span></p> </td> </tr> <tr> <td width="115"> <p align="left"><span lang="EN-US" xml:lang="EN-US">cookie大小：</span></p> </td> <td width="112"> <p align="center"><span lang="EN-US" xml:lang="EN-US">4095个字节</span></p> </td> <td width="121"> <p align="center"><span lang="EN-US" xml:lang="EN-US">4095个字节</span></p> </td> <td width="109"> <p align="center"><span lang="EN-US" xml:lang="EN-US">4096个字节</span></p> </td> <td width="111"> <p align="center"><span lang="EN-US" xml:lang="EN-US">4097个字节</span></p> </td> <td width="111"> <p align="center"><span lang="EN-US" xml:lang="EN-US">4097个字节</span></p> </td> <td width="115"> <p align="center"><span lang="EN-US" xml:lang="EN-US">4097个字节</span></p> </td> </tr> </table>
+
+<p>1、除Safari（可以设置全部cookie，不管数量多少）外，当Cookie已达到限额，浏览器会自动踢除最老的Cookie，以使给最新的Cookie一些空间。InternetExplorer和Opera使用此方法。<br>2、Firefox很独特，虽然最后的设置的Cookie始终保留，但似乎随机决定哪些cookie被保留，似乎没有任何计划（建议：在Firefox中不要超过Cookie限制）。<br>3、在所有浏览器中，任何cookie大小超过限制都被忽略，且永远不会被设置。<br>总之，在进行页面cookie操作的时候，应该尽量保证cookie个数小于20个，总大小小于4KB。</p>
+<h3 id="localStorage"><a href="#localStorage" class="headerlink" title="localStorage"></a>localStorage</h3><p>众所周知，localStorage是HTML5提供的一种本地存储方案，它能够把信息存储到你本地的计算机上，并再以后需要的时候进行获取。这个概念和cookie相似，区别是它是为了更大容量存储设计的。<br></p>
+<p><strong>localStorage有这些好处：</strong><br><br>1、localStorage和cookie一样提供了把数据保存到本地的能力，页面刷新或者关掉浏览器后，数据依然存在<br>2、大！虽然不同浏览器的标准可能不一样，主流的一般都在5~10M，比cookie的4k强多了<br>3、localStorage的数据不会被发到服务器，与cookie相比，节省带宽，加快响应速度<br>4、使用方法简单，下面列举一些常用的API：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">length&#65306;&#26412;&#22320;&#23384;&#20648;&#25968;&#25454;&#30340;&#20010;&#25968;&#10;setItem(key,value)&#65306;&#21521;key&#23383;&#27573;&#20889;&#20837;value&#25968;&#25454;&#10;getItem(key)&#65306;&#21435;key&#23383;&#27573;&#30340;&#25968;&#25454;&#10;removeItem(key)&#65306;&#31227;&#38500;key&#23383;&#27573;&#10;clear()&#65306;&#28165;&#31354;&#35813;&#22495;&#19979;&#30340;&#25152;&#26377;&#25968;&#25454;&#10;key(i)&#65306;&#33719;&#21462;&#31532;i&#20010;&#25968;&#25454;&#30340;key</span><br></pre></td></tr></table></figure></p>
+<p>但是，好事总不能尽善尽美，对于HTML5 localStorage也就下面这些浏览器支持：<br><img src="/img/localStorage+userData-instead-of-cookie/2011052411384081.jpg" alt="alt"><br>对于IE67，我们只能另辟蹊径了~</p>
+<h3 id="userData_behavior"><a href="#userData_behavior" class="headerlink" title="userData behavior"></a>userData behavior</h3><p>userData是微软为IE专门在系统中开辟的一块本地存储空间，单个文件的大小限制是128KB，一个域名下总共可以保存1024KB的文件，文件个数应该没有限制，IE5.0及以上浏览器都支持；跟Cookie的4KB相比userData的1024KB已经足够大，对于低版本的IE浏览器我们可以用userData实现本地存储。</p>
+<p><strong>userData的用法：</strong><br><br><strong>基本语法：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">XML:&#60;Prefix:CustomTag id=sID style=&#34;behavior:url(&#39;#default#userData&#39;)&#34; /&#62;&#10;HTML:&#60;ELEMENT style=&#34;behavior:url(&#39;#default#userData&#39;)&#34;id=sID&#62;&#10;Script:&#10;object.style.behavior = &#34;url(&#39;#default#userData&#39;)&#34; &#10;object.addBehavior (&#34;#default#userData&#34;)</span><br></pre></td></tr></table></figure></p>
+<p><strong>属性：</strong><br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">expires &#8212;&#8212; &#35774;&#32622;&#25110;&#32773;&#33719;&#21462; userData behavior &#20445;&#23384;&#25968;&#25454;&#30340;&#22833;&#25928;&#26085;&#26399;&#12290;&#10;XMLDocument &#8212;&#8212; &#33719;&#21462; XML &#30340;&#24341;&#29992;&#12290;</span><br></pre></td></tr></table></figure></p>
+<p><strong>方法：</strong><br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getAttribute() &#8212;&#8212; &#33719;&#21462;&#25351;&#23450;&#30340;&#23646;&#24615;&#20540;&#12290;&#10;load(object) &#8212;&#8212; &#20174; userData &#23384;&#20648;&#21306;&#36733;&#20837;&#23384;&#20648;&#30340;&#23545;&#35937;&#25968;&#25454;&#12290;&#10;removeAttribute() &#8212;&#8212; &#31227;&#38500;&#23545;&#35937;&#30340;&#25351;&#23450;&#23646;&#24615;&#12290;&#10;save(object) &#8212;&#8212; &#23558;&#23545;&#35937;&#25968;&#25454;&#23384;&#20648;&#21040;&#19968;&#20010; userData &#23384;&#20648;&#21306;&#12290;&#10;setAttribute() &#8212;&#8212; &#35774;&#32622;&#25351;&#23450;&#30340;&#23646;&#24615;&#20540;&#12290;</span><br></pre></td></tr></table></figure></p>
+<p><strong>备注：</strong><br><br>1、从安全方面考虑，一个 userData 存储区只能用于同一目录和对同一协议进行存储;<br>2、任何可以访问 UserData 保存磁盘的应用都可以访问该数据，所以，推荐不要保存敏感的数据;<br>3、userData 可以将数据以 XML 格式保存在客户端计算机上，一般保存在 C:\Documents and Settings\XXX\UserData\ 文件夹下。<br>4、userData 数据一直存在，除非人为删除或者用脚本设置该数据的失效日期（expires）。</p>
+<h3 id="u544A_u522BCookie"><a href="#u544A_u522BCookie" class="headerlink" title="告别Cookie"></a>告别Cookie</h3><p>既然有了localStorage和userData，对于一些仅仅只需要前端进行存储的数据，便可以解放Cookie了，毕竟前面也说过，Cookie虽好，但也它的弊端；下面是结合了localStorage和userData的简单封装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">// fxStore.js&#10;;(function()&#123;&#10;&#9;var fxStore = &#123;&#125;,&#10;&#9;&#9;doc = document,&#10;&#9;&#9;win = window,&#10;&#9;&#9;storageName = &#39;_fx_localStorage&#39;,&#10;&#9;&#9;storage;&#10;&#10;&#9;if (win.localStorage) &#123;&#10;&#9;&#9;storage = win.localStorage;&#10;&#9;&#9;fxStore.set = function(key, val) &#123;&#10;&#9;&#9;&#9;if (val === undefined) &#123;&#10;&#9;&#9;&#9;&#9;return fxStore.remove(key);&#10;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#9;storage.setItem(key, JSON.stringify(val));&#10;&#9;&#9;&#9;return val;&#10;&#9;&#9;&#125;&#10;&#9;&#9;fxStore.get = function(key) &#123;&#10;&#9;&#9;&#9;return val = JSON.parse(storage.getItem(key));&#10;&#9;&#9;&#125;&#10;&#9;&#9;fxStore.remove = function(key) &#123;&#10;&#9;&#9;&#9;storage.removeItem(key);&#10;&#9;&#9;&#125;&#10;&#9;&#9;fxStore.clear = function() &#123;&#10;&#9;&#9;&#9;storage.clear();&#10;&#9;&#9;&#125;&#10;&#9;&#9;fxStore.getAll = function() &#123;&#10;&#9;&#9;&#9;return storage;&#10;&#9;&#9;&#125;&#10;&#9;&#125; else &#123;&#10;&#9;&#9;if (document.documentElement.addBehavior) &#123;&#10;&#9;&#9;&#9;storage = doc.createElement(&#39;link&#39;);&#10;&#9;&#9;&#9;document.getElementsByTagName(&#39;head&#39;)[0].appendChild(storage);&#10;&#9;&#9;&#9;storage.addBehavior(&#39;#default#userData&#39;);&#10;&#9;&#9;&#9;fxStore.set = function(key, val) &#123;&#10;&#9;&#9;&#9;&#9;storage.load(storageName);&#10;&#9;&#9;&#9;&#9;storage.setAttribute(key, JSON.stringify(val));&#10;&#9;&#9;&#9;&#9;storage.save(storageName);&#10;&#9;&#9;&#9;&#9;return val;&#10;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#9;fxStore.get = function(key) &#123;&#10;&#9;&#9;&#9;&#9;storage.load(storageName);&#10;&#9;&#9;&#9;&#9;return JSON.parse(storage.getAttribute(key));&#10;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#9;fxStore.remove = function(key) &#123;&#10;&#9;&#9;&#9;&#9;storage.load(storageName);&#10;&#9;&#9;&#9;&#9;storage.removeAttribute(key);&#10;&#9;&#9;&#9;&#9;storage.save(storageName);console.log(storage);&#10;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#9;fxStore.clear = function() &#123;&#10;&#9;&#9;&#9;&#9;var attributes = storage.XMLDocument.documentElement.attributes;&#10;&#9;&#9;&#9;&#9;storage.load(storageName);&#10;&#9;&#9;&#9;&#9;while (attributes.length) &#123;&#10;&#9;&#9;&#9;&#9;&#9;storage.removeAttribute(attributes[0].name);&#10;&#9;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#9;&#9;storage.save(storageName);&#10;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#9;fxStore.getAll = function() &#123;&#10;&#9;&#9;&#9;&#9;var ret = &#123;&#125;;&#10;&#9;&#9;&#9;&#9;for (var key in storage) &#123;&#10;&#9;&#9;&#9;&#9;&#9;ret[key] = val;&#10;&#9;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#9;&#9;return ret;&#10;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#125;&#10;&#9;&#125;&#10;&#9;win.fxStore = fxStore;&#10;&#125;)();</span><br></pre></td></tr></table></figure></p>
+<p>上面的代码需要JSON支持。类似的类库，现在也有很多，我所知道的主要是以下几个吧：<br><br><strong>jStorage.js</strong><br><br><a href="http://www.jstorage.info/" target="_blank" rel="external">http://www.jstorage.info/</a><br><a href="https://github.com/andris9/jStorage" target="_blank" rel="external">https://github.com/andris9/jStorage</a></p>
+<p><strong>store.js</strong><br><br><a href="https://github.com/marcuswestin/store.js" target="_blank" rel="external">https://github.com/marcuswestin/store.js</a></p>
+<p><strong>amplify.js</strong><br><br><a href="https://github.com/mikehostetler/amplify" target="_blank" rel="external">https://github.com/mikehostetler/amplify</a></p>
+<h3 id="u5176_u4ED6_u65B9_u6848"><a href="#u5176_u4ED6_u65B9_u6848" class="headerlink" title="其他方案"></a>其他方案</h3><p>本地存储也算是经历了一定的历史过程，才到达HTML5 localStorage这一步：<br><img src="/img/localStorage+userData-instead-of-cookie/2011052411382518.jpg" alt="alt"><br><strong>Flash cookie:</strong><br>所以除了localStorage+userData，我们还可以用嵌入Flash的方式解决，缺点就是要引入额外的Flash文件，但是不得不说，这种方式是兼容性最好也是最保险的做法！<br><br><strong>Google Gears:</strong><br>Google Gears是Google在07年发布的一个开源浏览器插件，旨在改进各大浏览器的兼容性，Gears内置了一个基于SQLite的嵌入式 SQL数据库，并提供了统一API对数据库进行访问，在取得用户授权之后，每个站点可以在SQL数据库中存储不限大小的数据，不过Google现在也转战localStorage放弃Gears了。</p>
+<h3 id="u540E_u8BB0"><a href="#u540E_u8BB0" class="headerlink" title="后记"></a>后记</h3><p>对于前端本地存储，Cookie有点大小和个数限制、localStorage低版本IE不支持、userData也只是IE支持，Flash需要引入Flash文件，不管是何种单独的方式，都很难做到一劳永逸，具体的做法还是得根据你应用来选择。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/02/24/use-localStorage+userData-instead-of-Cookie/">告别Cookie，拥抱localStorage+userData</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Gary Gao 的个人博客">Gary Gao</a></p>
+        <p><span>发布时间:</span>2016年02月24日 - 14时47分</p>
+        <p><span>最后更新:</span>2016年02月24日 - 14时47分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/02/24/use-localStorage+userData-instead-of-Cookie/" title="告别Cookie，拥抱localStorage+userData">http://garygchai.github.io/2016/02/24/use-localStorage+userData-instead-of-Cookie/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://garygchai.github.io/2016/02/24/use-localStorage+userData-instead-of-Cookie/　　作者: Gary Gao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/02/24/what-is-bem/">
+                    BEM是什么鬼？
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/02/24/async-js-debug-by-chrome-Sources/">
+                    异步加载的JS如何在chrome浏览器断点调试？
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#u5F15_u8A00"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie"><span class="toc-number">2.</span> <span class="toc-text">Cookie</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#localStorage"><span class="toc-number">3.</span> <span class="toc-text">localStorage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#userData_behavior"><span class="toc-number">4.</span> <span class="toc-text">userData behavior</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u544A_u522BCookie"><span class="toc-number">5.</span> <span class="toc-text">告别Cookie</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u5176_u4ED6_u65B9_u6848"><span class="toc-number">6.</span> <span class="toc-text">其他方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u540E_u8BB0"><span class="toc-number">7.</span> <span class="toc-text">后记</span></a></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+
+
+
+    <div class="share">
+    <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+    <a href="#" class="bds_copy" data-cmd="copy" title="复制网址"></a>
+    <a href="#" class="bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+    </div>
+    <script>
+        window._bd_share_config={
+            "common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+</div>
+
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/02/24/what-is-bem/" title="上一篇: BEM是什么鬼？">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/02/24/async-js-debug-by-chrome-Sources/" title="下一篇: 异步加载的JS如何在chrome浏览器断点调试？">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/fis3-module/">fis3工程化中的模块化开发</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/cross-domain-post/">聊聊如何像jsonp一样提交post跨域请求</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/what-is-bem/">BEM是什么鬼？</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/use-localStorage+userData-instead-of-Cookie/">告别Cookie，拥抱localStorage+userData</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/async-js-debug-by-chrome-Sources/">异步加载的JS如何在chrome浏览器断点调试？</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/build-private-npm-by-sinopia/">使用sinopia五步完成本地npm搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/hello-world/">Hello World</a></li></ul>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2016 Gary Gao
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的静态博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减双栏 Hexo 博客主题">Yelee</a> by MOxFIVE
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >本站到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

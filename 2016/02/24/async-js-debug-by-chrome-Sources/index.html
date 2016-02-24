@@ -3,26 +3,23 @@
 <head>
   <meta charset="utf-8">
   
-  <title>使用sinopia五步完成本地npm搭建 | GaryGao&#39;s blog</title>
+  <title>异步加载的JS如何在chrome浏览器断点调试？ | GaryGao&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="为什么要搭建私有npm？不知道大家在安装npm包的时候有没有出现过下载速度慢和下载异常的情况，反正是我经常遇到！这也是cnpm这类国内镜像出现的原因，但是毕竟还是在使用在使用别人的服务，如果有条件搭建自己的npm包管理服务器的话，还是有诸多好处的：1、下载依赖速度够快2、不会因为npm官方镜像挂掉而影响开发3、私有模块管理
-今天看到白大神部署了我们公司的本地npm私服，终于有幸认识到sinipia">
+  <meta name="description" content="我们常常利用chrome强大的控制台Sources下面进行代码断点调试，但是通过$.getScript等异步加载JS的方式在Sources里面就是找不到，那如何进行debug断点调试呢？">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用sinopia五步完成本地npm搭建">
-<meta property="og:url" content="http://yoursite.com/2016/02/19/build-private-npm-by-sinopia/index.html">
+<meta property="og:title" content="异步加载的JS如何在chrome浏览器断点调试？">
+<meta property="og:url" content="http://garygchai.github.io/2016/02/24/async-js-debug-by-chrome-Sources/index.html">
 <meta property="og:site_name" content="GaryGao's blog">
-<meta property="og:description" content="为什么要搭建私有npm？不知道大家在安装npm包的时候有没有出现过下载速度慢和下载异常的情况，反正是我经常遇到！这也是cnpm这类国内镜像出现的原因，但是毕竟还是在使用在使用别人的服务，如果有条件搭建自己的npm包管理服务器的话，还是有诸多好处的：1、下载依赖速度够快2、不会因为npm官方镜像挂掉而影响开发3、私有模块管理
-今天看到白大神部署了我们公司的本地npm私服，终于有幸认识到sinipia">
-<meta property="og:image" content="http://yoursite.com/img/build-private-npm-by-sinopia/start-sinopia.png">
-<meta property="og:image" content="http://yoursite.com/img/build-private-npm-by-sinopia/run-sinopia.png">
-<meta property="og:image" content="http://yoursite.com/img/build-private-npm-by-sinopia/user-sinopia.png">
-<meta property="og:image" content="http://yoursite.com/img/build-private-npm-by-sinopia/publish-sinopia.png">
-<meta property="og:image" content="http://yoursite.com/img/build-private-npm-by-sinopia/install-sinopia.png">
-<meta property="og:updated_time" content="2016-02-19T10:35:14.271Z">
+<meta property="og:description" content="我们常常利用chrome强大的控制台Sources下面进行代码断点调试，但是通过$.getScript等异步加载JS的方式在Sources里面就是找不到，那如何进行debug断点调试呢？">
+<meta property="og:image" content="http://garygchai.github.io/img/async-js-debug-by-chrome-Sources/E-ZR0TY-T14SLZAMB-1-LQL.png">
+<meta property="og:image" content="http://garygchai.github.io/img/async-js-debug-by-chrome-Sources/9982SBW--HJCEV2K-UC089R.png">
+<meta property="og:image" content="http://garygchai.github.io/img/async-js-debug-by-chrome-Sources/X2I9-0CPJBWGK-JEZB-V0D9.png">
+<meta property="og:image" content="http://garygchai.github.io/img/async-js-debug-by-chrome-Sources/CKR5-6Y3-VZO-V1B99_W-_O.png">
+<meta property="og:image" content="http://garygchai.github.io/img/async-js-debug-by-chrome-Sources/9-T--HWCBLOIM81CZ0DH5JQ.png">
+<meta property="og:updated_time" content="2016-02-24T04:57:26.348Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用sinopia五步完成本地npm搭建">
-<meta name="twitter:description" content="为什么要搭建私有npm？不知道大家在安装npm包的时候有没有出现过下载速度慢和下载异常的情况，反正是我经常遇到！这也是cnpm这类国内镜像出现的原因，但是毕竟还是在使用在使用别人的服务，如果有条件搭建自己的npm包管理服务器的话，还是有诸多好处的：1、下载依赖速度够快2、不会因为npm官方镜像挂掉而影响开发3、私有模块管理
-今天看到白大神部署了我们公司的本地npm私服，终于有幸认识到sinipia">
+<meta name="twitter:title" content="异步加载的JS如何在chrome浏览器断点调试？">
+<meta name="twitter:description" content="我们常常利用chrome强大的控制台Sources下面进行代码断点调试，但是通过$.getScript等异步加载JS的方式在Sources里面就是找不到，那如何进行debug断点调试呢？">
   
     <link rel="alternative" href="/atom.xml" title="GaryGao&#39;s blog" type="application/atom+xml">
   
@@ -61,7 +58,7 @@
     <header id="header" class="inner">
         <a href="/" class="profilepic">
             
-            <img lazy-src="/img/avatar.png" class="js-avatar">
+            <img lazy-src="/img/my-avatar.jpg" class="js-avatar">
             
         </a>
 
@@ -134,9 +131,9 @@
                     <nav class="header-nav">
                         <ul class="social">
                             
-                                <li id="Email"><a class="Email" target="_blank" href="mailto:123@123.com" title="Email"></a></li>
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:garygchai@gmail.com" title="Email"></a></li>
                             
-                                <li id="GitHub"><a class="GitHub" target="_blank" href="/#" title="GitHub"></a></li>
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/garygchai/" title="GitHub"></a></li>
                             
                                 <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
                             
@@ -147,7 +144,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        
+                        <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/FIS/" style="font-size: 10px;">FIS</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NPM/" style="font-size: 10px;">NPM</a>
                     </div>
                 </section>
                 
@@ -170,7 +167,7 @@
                 
                 <section class="switch-part switch-part4">
                 
-                    <div id="js-aboutme">专注于前端</div>
+                    <div id="js-aboutme">没有最好，只有更好！</div>
                 </section>
                 
             </div>
@@ -188,7 +185,7 @@
         <header id="header" class="inner">
             <a href="/" class="profilepic">
                 
-                    <img lazy-src="/img/avatar.png" class="js-avatar">
+                    <img lazy-src="/img/my-avatar.jpg" class="js-avatar">
                 
             </a>
             <hgroup>
@@ -212,9 +209,9 @@
             <nav class="header-nav">
                         <ul class="social">
                             
-                                <li id="Email"><a class="Email" target="_blank" href="mailto:123@123.com" title="Email"></a></li>
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:garygchai@gmail.com" title="Email"></a></li>
                             
-                                <li id="GitHub"><a class="GitHub" target="_blank" href="/#" title="GitHub"></a></li>
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/garygchai/" title="GitHub"></a></li>
                             
                                 <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
                             
@@ -223,11 +220,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-build-private-npm-by-sinopia" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-async-js-debug-by-chrome-Sources" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/02/19/build-private-npm-by-sinopia/" class="article-date">
-      <time datetime="2016-02-19T10:35:14.271Z" itemprop="datePublished">2016-02-19</time>
+      <a href="/2016/02/24/async-js-debug-by-chrome-Sources/" class="article-date">
+      <time datetime="2016-02-24T04:57:26.348Z" itemprop="datePublished">2016-02-24</time>
 </a>
     </div>
   
@@ -240,7 +237,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      使用sinopia五步完成本地npm搭建
+      异步加载的JS如何在chrome浏览器断点调试？
     </h1>
   
 
@@ -248,8 +245,16 @@
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/前端攻城/">前端攻城</a>
+    </div>
+
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -257,19 +262,17 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h2 id="u4E3A_u4EC0_u4E48_u8981_u642D_u5EFA_u79C1_u6709npm_uFF1F"><a href="#u4E3A_u4EC0_u4E48_u8981_u642D_u5EFA_u79C1_u6709npm_uFF1F" class="headerlink" title="为什么要搭建私有npm？"></a>为什么要搭建私有npm？</h2><p>不知道大家在安装npm包的时候有没有出现过下载速度慢和下载异常的情况，反正是我经常遇到！<br>这也是cnpm这类国内镜像出现的原因，但是毕竟还是在使用在使用别人的服务，如果有条件搭建自己的npm包管理服务器的话，还是有诸多好处的：<br>1、下载依赖速度够快<br>2、不会因为npm官方镜像挂掉而影响开发<br>3、私有模块管理</p>
-<p>今天看到白大神部署了我们公司的本地npm私服，终于有幸认识到sinipia！一款可以快速搭建本地npm镜像的服务器：<a href="https://github.com/rlidwka/sinopia" target="_blank" rel="external">https://github.com/rlidwka/sinopia</a>。</p>
-<h2 id="Quick_Start"><a href="#Quick_Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="u7B2C_u4E00_u6B65_uFF0C_u5B89_u88C5_sinopia"><a href="#u7B2C_u4E00_u6B65_uFF0C_u5B89_u88C5_sinopia" class="headerlink" title="第一步，安装 sinopia"></a>第一步，安装 sinopia</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g sinopia</span><br></pre></td></tr></table></figure>
-<h3 id="u7B2C_u4E8C_u6B65_uFF0C_u542F_u52A8_sinopia"><a href="#u7B2C_u4E8C_u6B65_uFF0C_u542F_u52A8_sinopia" class="headerlink" title="第二步，启动 sinopia"></a>第二步，启动 sinopia</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sinopia</span><br></pre></td></tr></table></figure>
-<p><img src="/img/build-private-npm-by-sinopia/start-sinopia.png" alt="启动sinopia"><br>sinopia启动之后可以看到配置文件在 C:\Users\Administrator\AppData\Roaming\sinopia\config.xml，<br>本地默认服务器地址是 <a href="http://localhost:4873/，访问一下：" target="_blank" rel="external">http://localhost:4873/，访问一下：</a><br><img src="/img/build-private-npm-by-sinopia/run-sinopia.png" alt="启动sinopia"></p>
-<h3 id="u7B2C_u4E09_u6B65_uFF0C_u521B_u5EFA_u65B0_u7528_u6237"><a href="#u7B2C_u4E09_u6B65_uFF0C_u521B_u5EFA_u65B0_u7528_u6237" class="headerlink" title="第三步，创建新用户"></a>第三步，创建新用户</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm adduser --registry http://localhost:<span class="number">4873</span></span><br></pre></td></tr></table></figure>
-<p><img src="/img/build-private-npm-by-sinopia/user-sinopia.png" alt="新用户"></p>
-<h3 id="u7B2C_u56DB_u6B65_uFF0C_u53D1_u5E03npm_u5305"><a href="#u7B2C_u56DB_u6B65_uFF0C_u53D1_u5E03npm_u5305" class="headerlink" title="第四步，发布npm包"></a>第四步，发布npm包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm publish</span><br></pre></td></tr></table></figure>
-<p>接下来就是发布资源包到服务器了，我们创建一个繁星基类库的包文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#10;  &#34;name&#34;: &#34;fx.fx&#34;,&#10;  &#34;version&#34;: &#34;1.0.0&#34;,&#10;  &#34;main&#34;: &#34;fx.js&#34;,&#10;  &#34;scripts&#34;: &#123;&#10;    &#34;test&#34;: &#34;echo \&#34;Error: no test specified\&#34; &#38;&#38; exit 1&#34;&#10;  &#125;,&#10;  &#34;author&#34;: &#34;gary gao&#34;,&#10;  &#34;license&#34;: &#34;ISC&#34;,&#10;  &#34;description&#34;: &#34;&#32321;&#26143;&#22522;&#31867;&#24211;fx.js   \r &#23433;&#35013;&#26041;&#27861;&#65306;npm install fx.fx&#34;,&#10;  &#34;readme&#34;: &#34;&#32321;&#26143;&#22522;&#31867;&#24211;fx.js   \r\n&#23433;&#35013;&#26041;&#27861;&#65306;npm install fx.fx \r\n&#34;,&#10;  &#34;readmeFilename&#34;: &#34;README.md&#34;,&#10;  &#34;_id&#34;: &#34;fx.fx@1.0.0&#34;,&#10;  &#34;_from&#34;: &#34;fx.fx@&#34;&#10;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>用户登录成功之后就可以发布新包了：<br><img src="/img/build-private-npm-by-sinopia/publish-sinopia.png" alt="发布新包"></p>
-<h3 id="u7B2C_u4E94_u6B65_uFF0C_u5B89_u88C5npm_u5305"><a href="#u7B2C_u4E94_u6B65_uFF0C_u5B89_u88C5npm_u5305" class="headerlink" title="第五步，安装npm包"></a>第五步，安装npm包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install fx.fx</span><br></pre></td></tr></table></figure>
-<p>我们现在看看是否能安装成功：<br><img src="/img/build-private-npm-by-sinopia/install-sinopia.png" alt="安装依赖包"></p>
-<p>至此，已经完成私有npm的搭建，接下来就是维护的事情啦。 </p>
+        <p>我们常常利用chrome强大的控制台Sources下面进行代码断点调试，但是通过$.getScript等异步加载JS的方式在Sources里面就是找不到，那如何进行debug断点调试呢？</p>
+<a id="more"></a>
+<p>这是我们用Sources断点调试的实例图：</p>
+<p><img src="/img/async-js-debug-by-chrome-Sources/E-ZR0TY-T14SLZAMB-1-LQL.png" alt=""></p>
+<p>图中我们可以看到，在index.js中我们通过$.getScript引入test.js，看看表现如何：<br><img src="/img/async-js-debug-by-chrome-Sources/9982SBW--HJCEV2K-UC089R.png" alt=""></p>
+<p>我们在Network中看到test.js已经成功引入，但是它却属于XHR类请求，这样我们在Sources必然找不到它。<br><img src="/img/async-js-debug-by-chrome-Sources/X2I9-0CPJBWGK-JEZB-V0D9.png" alt=""></p>
+<p>不出所料，Sources里果然没有发现test.js的踪迹！高潮来了，那还怎么进行断点调试呢？？？</p>
+<p>我知道两个方案，先来最简单的：</p>
+<p>方案一：<br>在test.js代码的头部或者尾部加上//@ sourceURL=test.js，然后在(no domain)里面找到它进行调试，看看结果：<br><img src="/img/async-js-debug-by-chrome-Sources/CKR5-6Y3-VZO-V1B99_W-_O.png" alt=""></p>
+<p>方案二：<br>把$.getScript这种异步的方式换成创建script标签同步加载的方式，直接上图：<br><img src="/img/async-js-debug-by-chrome-Sources/9-T--HWCBLOIM81CZ0DH5JQ.png" alt=""></p>
+<p>控制台断点对我们进行代码检查、功能检测、数据查看等等需求太有用了，我们尽量用断点替换那烦人的console.log吧，不要告诉你不会用哦！</p>
 
       
     </div>
@@ -278,13 +281,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/02/19/build-private-npm-by-sinopia/">使用sinopia五步完成本地npm搭建</a></p>
+        <p><span>本文标题:</span><a href="/2016/02/24/async-js-debug-by-chrome-Sources/">异步加载的JS如何在chrome浏览器断点调试？</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Gary Gao 的个人博客">Gary Gao</a></p>
-        <p><span>发布时间:</span>2016年02月19日 - 18时35分</p>
-        <p><span>最后更新:</span>2016年02月19日 - 18时35分</p>
+        <p><span>发布时间:</span>2016年02月24日 - 12时57分</p>
+        <p><span>最后更新:</span>2016年02月24日 - 12时57分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/02/19/build-private-npm-by-sinopia/" title="使用sinopia五步完成本地npm搭建">http://yoursite.com/2016/02/19/build-private-npm-by-sinopia/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2016/02/19/build-private-npm-by-sinopia/　　作者: Gary Gao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/02/24/async-js-debug-by-chrome-Sources/" title="异步加载的JS如何在chrome浏览器断点调试？">http://garygchai.github.io/2016/02/24/async-js-debug-by-chrome-Sources/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://garygchai.github.io/2016/02/24/async-js-debug-by-chrome-Sources/　　作者: Gary Gao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -297,10 +300,16 @@
 
     <nav id="article-nav">
         
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/02/24/use-localStorage+userData-instead-of-Cookie/">
+                    告别Cookie，拥抱localStorage+userData
+                </a>
+            </div>
+        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/01/06/hello-world/">
-                    Hello World
+                <a href="/2016/02/24/build-private-npm-by-sinopia/">
+                    使用sinopia五步完成本地npm搭建
                 </a>
             </div>
         
@@ -311,7 +320,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E3A_u4EC0_u4E48_u8981_u642D_u5EFA_u79C1_u6709npm_uFF1F"><span class="toc-number">1.</span> <span class="toc-text">为什么要搭建私有npm？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick_Start"><span class="toc-number">2.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#u7B2C_u4E00_u6B65_uFF0C_u5B89_u88C5_sinopia"><span class="toc-number">2.1.</span> <span class="toc-text">第一步，安装 sinopia</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u7B2C_u4E8C_u6B65_uFF0C_u542F_u52A8_sinopia"><span class="toc-number">2.2.</span> <span class="toc-text">第二步，启动 sinopia</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u7B2C_u4E09_u6B65_uFF0C_u521B_u5EFA_u65B0_u7528_u6237"><span class="toc-number">2.3.</span> <span class="toc-text">第三步，创建新用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u7B2C_u56DB_u6B65_uFF0C_u53D1_u5E03npm_u5305"><span class="toc-number">2.4.</span> <span class="toc-text">第四步，发布npm包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u7B2C_u4E94_u6B65_uFF0C_u5B89_u88C5npm_u5305"><span class="toc-number">2.5.</span> <span class="toc-text">第五步，安装npm包</span></a></li></ol></li></ol>
+    
 </div>
 <style>
     .left-col .switch-btn {
@@ -379,19 +388,21 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2016/02/24/use-localStorage+userData-instead-of-Cookie/" title="上一篇: 告别Cookie，拥抱localStorage+userData">
+                <i class="fa fa-angle-left"></i>
+            </a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/01/06/hello-world/" title="下一篇: Hello World">
+            <a href="/2016/02/24/build-private-npm-by-sinopia/" title="下一篇: 使用sinopia五步完成本地npm搭建">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/02/19/build-private-npm-by-sinopia/">使用sinopia五步完成本地npm搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/01/06/hello-world/">Hello World</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/fis3-module/">fis3工程化中的模块化开发</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/cross-domain-post/">聊聊如何像jsonp一样提交post跨域请求</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/what-is-bem/">BEM是什么鬼？</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/use-localStorage+userData-instead-of-Cookie/">告别Cookie，拥抱localStorage+userData</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/async-js-debug-by-chrome-Sources/">异步加载的JS如何在chrome浏览器断点调试？</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/build-private-npm-by-sinopia/">使用sinopia五步完成本地npm搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/hello-world/">Hello World</a></li></ul>
     <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>fis3工程化中的模块化开发 | GaryGao&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="&amp;emsp;&amp;emsp;经历过杂乱的js函数式编程的人在认识了模块化和模块加载器之后，一定觉得是一种福音。模块化让我们更加有组织有模块地去编写我们的代码，模块化加载器让我们更加方便和清晰地进行模块定义和依赖管理。现在主要的模块化规范是commonJS，AMD和CMD，commonJS主要是用于node服务端，AMD和CMD主要用于浏览器端，代表框架分别是requireJS和seaJS；作为前端，当">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fis3工程化中的模块化开发">
+<meta property="og:url" content="http://garygchai.github.io/2016/02/24/fis3-module/index.html">
+<meta property="og:site_name" content="GaryGao's blog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;经历过杂乱的js函数式编程的人在认识了模块化和模块加载器之后，一定觉得是一种福音。模块化让我们更加有组织有模块地去编写我们的代码，模块化加载器让我们更加方便和清晰地进行模块定义和依赖管理。现在主要的模块化规范是commonJS，AMD和CMD，commonJS主要是用于node服务端，AMD和CMD主要用于浏览器端，代表框架分别是requireJS和seaJS；作为前端，当">
+<meta property="og:image" content="http://garygchai.github.io/img/fis3-module/ND-5--I8-VT412BYGXF8F-G.png">
+<meta property="og:image" content="http://garygchai.github.io/img/fis3-module/XP-M---XE-W0-EZ2-4-UJ-U.png">
+<meta property="og:image" content="http://garygchai.github.io/img/fis3-module/5ES---W92T--T-7ABK-VA5R.png">
+<meta property="og:updated_time" content="2016-02-24T08:28:15.670Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fis3工程化中的模块化开发">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;经历过杂乱的js函数式编程的人在认识了模块化和模块加载器之后，一定觉得是一种福音。模块化让我们更加有组织有模块地去编写我们的代码，模块化加载器让我们更加方便和清晰地进行模块定义和依赖管理。现在主要的模块化规范是commonJS，AMD和CMD，commonJS主要是用于node服务端，AMD和CMD主要用于浏览器端，代表框架分别是requireJS和seaJS；作为前端，当">
+  
+    <link rel="alternative" href="/atom.xml" title="GaryGao&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" type="text/css">
+  
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/my-avatar.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/">Gary Gao</a></h1>
+        </hgroup>
+
+        
+                
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:garygchai@gmail.com" title="Email"></a></li>
+                            
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/garygchai/" title="GitHub"></a></li>
+                            
+                                <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/FIS/" style="font-size: 10px;">FIS</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NPM/" style="font-size: 10px;">NPM</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">没有最好，只有更好！</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Gary Gao</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/my-avatar.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Gary Gao</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:garygchai@gmail.com" title="Email"></a></li>
+                            
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/garygchai/" title="GitHub"></a></li>
+                            
+                                <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-fis3-module" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/02/24/fis3-module/" class="article-date">
+      <time datetime="2016-02-24T08:28:15.670Z" itemprop="datePublished">2016-02-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      fis3工程化中的模块化开发
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/前端攻城/">前端攻城</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/FIS/">FIS</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&emsp;&emsp;经历过杂乱的js函数式编程的人在认识了模块化和模块加载器之后，一定觉得是一种福音。模块化让我们更加有组织有模块地去编写我们的代码，模块化加载器让我们更加方便和清晰地进行模块定义和依赖管理。现在主要的模块化规范是commonJS，AMD和CMD，commonJS主要是用于node服务端，AMD和CMD主要用于浏览器端，代表框架分别是requireJS和seaJS；作为前端，当然更熟悉的是requireJS和seaJS，但是对于我个人而言，commonJS的编码方式我更喜欢，因为简单，无需使用define包装。<br><a id="more"></a><br>&emsp;&emsp;如今，要特别感谢前端工程化的出现，让commonJS的编码方式在前端变成可能，比如我们熟悉的Browserify，当然作为国内最强大的前端工程化工具——fis，当然也对模块化也有自己的实现。下面我们来学习一下fis3是如何实现模块化构建的。当然你也可以直接阅读官方文档：<a href="http://fex-team.github.io/fis3/docs/lv3.html#%E6%A8%A1%E5%9D%97%E5%8C%96%E5%BC%80%E5%8F%91" target="_blank" rel="external">fis3模块化</a><br><br>&emsp;&emsp;模块化框架一般包含了模块的依赖分析、模块加载并保持依赖顺序等功能。但在 FIS 中，依赖本身在构建过程中就已经分析完成，并记录在静态资源映射表中，那么对于线上运行时，模块化框架就可以省掉依赖分析这个步骤了。<br><br>&emsp;&emsp;fis3中针对前端模块化框架的特性自动添加define包装，以及根据配置生成对应的require依赖标识主要是通过对应的模块化插件实现的：<br><br><a href="https://github.com/fex-team/fis3-hook-commonjs" target="_blank" rel="external">fis3-hook-commonjs</a><br><br><a href="https://github.com/fex-team/fis3-hook-amd" target="_blank" rel="external">fis3-hook-amd</a><br><br><a href="https://github.com/fex-team/fis3-hook-cmd" target="_blank" rel="external">fis3-hook-cmd</a><br><br>生成了规范的模块文件之后，如何将模块之间的依赖关系生成静态资源映射表，则是通过<br><br><a href="https://github.com/fex-team/fis3-postpackager-loader" target="_blank" rel="external">fis3-postpackager-loader</a>。<br><br>这个插件用于分析页面中使用的和依赖的资源（js或css）, 并将这些资源做一定的优化后插入页面中。<br><br>下面我们结合栗子来学习一下这些模块化插件是如何工作的。先看看我们专题页项目的目录结构！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static/ #&#39033;&#30446;&#38745;&#24577;&#25991;&#20214;&#30446;&#24405;&#10;      common/ #&#20844;&#20849;&#38745;&#24577;&#25991;&#20214;&#30446;&#24405;&#10;            js/&#10;              lib/ #&#31867;&#24211;&#25991;&#20214;&#10;                 mod.js&#10;                 require.js&#10;                 sea.js&#10;              mod/ #&#38656;&#35201;&#27169;&#22359;&#21270;&#30340;&#25991;&#20214;&#10;                 react.js&#10;                 jquery.js&#10;            css/ #css&#25991;&#20214;&#30446;&#24405;&#10;               style.css&#10;            images/ #&#22270;&#29255;&#25991;&#20214;&#30446;&#24405;&#10;               style.png&#10;            commponents/ #&#20844;&#20849;&#32452;&#20214;&#65292;&#20063;&#26159;&#38656;&#35201;&#27169;&#22359;&#21270;&#21152;&#36733;&#30340;&#10;                       HelloMessage/&#10;                                   HelloMessage.jsx&#10;                                   HelloMessage.css&#10;     helloworld/ #&#31616;&#21333;&#30340;&#20363;&#23376;&#10;              index.html&#10;              index.css&#10;              index.jsx&#10;fis-conf.js #fis&#37197;&#32622;&#25991;&#20214;&#10;package.json #&#21253;&#37197;&#32622;&#25991;&#20214;</span><br></pre></td></tr></table></figure></p>
+<h3 id="commonJS_u6A21_u5757_u5316"><a href="#commonJS_u6A21_u5757_u5316" class="headerlink" title="commonJS模块化"></a>commonJS模块化</h3><p>在浏览器环境运行的代码，如果我们希望采用commonJS规范作为模块化开发，则需要安装<a href="https://github.com/fex-team/fis3-hook-commonjs" target="_blank" rel="external">fis3-hook-commonjs</a>插件，<code>npm install fis3-hook-commonjs --save</code>，还要配合<a href="https://github.com/fex-team/mod/blob/master/mod.js" target="_blank" rel="external">mod.js</a>来使用；<br><br>安装完成之后看一下fis-conf.js如何配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">###fis-conf.js&#10;/*&#35774;&#32622;&#32534;&#35793;&#33539;&#22260;*/&#10;fis.set(&#39;project.files&#39;, [&#39;static/**&#39;]);&#10;/*&#35774;&#32622;&#21457;&#24067;&#36335;&#24452;*/&#10;fis.match(/\/static\/(.*)/i, &#123;&#10;    release: &#39;/staticPub/$1&#39;, /*&#25152;&#26377;&#36164;&#28304;&#21457;&#24067;&#26102;&#20135;&#20986;&#21040; /staticPub &#30446;&#24405;&#19979;*/&#10;    url: &#39;/staticPub/$1&#39; /*&#25152;&#26377;&#36164;&#28304;&#35775;&#38382;&#36335;&#24452;&#35774;&#32622;*/&#10;&#125;);&#10;/*&#25351;&#23450;&#27169;&#22359;&#21270;&#25554;&#20214;*/&#10;fis.hook(&#39;commonjs&#39;, &#123;&#10;    paths: &#123;&#10;        jquery: &#39;/static/common/js/mod/jquery&#39;, //&#35774;&#32622;jquery&#21035;&#21517;&#10;        react: &#39;/static/common/js/mod/react&#39; //&#35774;&#32622;react&#21035;&#21517;&#10;    &#125;&#10;&#125;);&#10;/*&#25351;&#23450;&#21738;&#20123;&#30446;&#24405;&#19979;&#30340;&#25991;&#20214;&#25191;&#34892;define&#21253;&#35065;*/&#10;fis.match(&#39;/static/common/js/mod/**&#39;, &#123;&#10;  isMod: true&#10;&#125;);&#10;fis.match(&#39;/static/common/components/**&#39;, &#123;&#10;  isMod: true&#10;&#125;);&#10;fis.match(&#39;/static/helloworld/**&#39;, &#123;&#10;  isMod: true&#10;&#125;);&#10;/*&#27169;&#22359;&#21270;&#21152;&#36733;&#22120;&#37197;&#32622;*/&#10;fis.match(&#39;::package&#39;, &#123;&#10;  postpackager: fis.plugin(&#39;loader&#39;, &#123;&#10;    allInOne: true, //js&#38;css&#25171;&#21253;&#25104;&#19968;&#20010;&#25991;&#20214;&#10;    sourceMap: true, //&#26159;&#21542;&#29983;&#25104;&#20381;&#36182;map&#25991;&#20214;&#10;    useInlineMap: true //&#26159;&#21542;&#23558;sourcemap&#20316;&#20026;&#20869;&#23884;&#33050;&#26412;&#36755;&#20986;&#10;  &#125;)&#10;&#125;);&#10;/*&#25903;&#25345;react*/&#10;fis.match(&#39;*.jsx&#39;, &#123;&#10;    rExt: &#39;.js&#39;,&#10;    parser: fis.plugin(&#39;react&#39;, &#123;&#125;)&#10;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>注意：需要对目标文件设置 isMod 属性，说明这些文件是模块化代码。这样才会被自动加上define包装，才能在浏览器里面运行。<a href="https://github.com/fex-team/fis3-postpackager-loader" target="_blank" rel="external">fis3-postpackager-loader</a>的作用则是分析这些文件的依赖关系并生成对应的sourceMap文件，让mod.js分析并加载模块对应的文件到浏览器中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#helloworld/index.html&#10;&#60;!DOCTYPE html&#62;&#10;&#60;html&#62;&#10;&#60;head&#62;&#10;&#9;&#60;title&#62;&#32321;&#26143;&#32593; | &#20840;&#29699;&#26368;&#22823;&#38899;&#20048;&#29616;&#22330;&#30452;&#25773;&#24179;&#21488;&#60;/title&#62;&#10;&#9;&#60;meta charset=&#34;utf-8&#34;&#62;&#10;&#9;&#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/static/common/css/style.css&#34;&#62;&#10;&#9;&#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;./css/index.css&#34;&#62;&#10;&#60;/head&#62;&#10;&#60;body&#62;&#10;&#9;&#60;div id=&#34;helloApp&#34;&#62;&#60;/div&#62;&#10;&#60;/body&#62;&#10;&#60;script type=&#34;text/javascript&#34; src=&#34;/static/common/js/lib/mod.js&#34;&#62;&#60;/script&#62;&#10;&#60;script type=&#34;text/javascript&#34;&#62;&#10;require([&#39;./index&#39;]);//&#24322;&#27493;&#21152;&#36733;index.js&#27169;&#22359;&#10;&#60;/script&#62;&#10;&#60;/html&#62;&#10;&#10;#helloworld/index.jsx&#10;//&#24341;&#20837;React&#21644;HelloMessage&#27169;&#22359;&#10;var React = require(&#39;react&#39;);&#10;var HelloMessage = require(&#39;/static/common/components/HelloMessage/HelloMessage.react&#39;);&#10;React.render(&#10;  &#60;HelloMessage message=&#34;I like commonjs!&#34; /&#62;,&#10;  document.getElementById(&#39;helloApp&#39;)&#10;);&#10;&#10;#common/components/HelloMessage/HelloMessage.react.jsx&#10;var React = require(&#39;react&#39;);&#10;var HelloMessage = React.createClass(&#123;&#10;  &#9;render: function() &#123;&#10;&#9;    return (&#10;&#9;      &#9;&#60;h1&#62;Hello, &#123;this.props.message&#125;&#60;/h1&#62;&#10;&#9;    );&#10;&#9;&#125;&#10;&#125;);&#10;module.exports = HelloMessage;</span><br></pre></td></tr></table></figure></p>
+<p>helloworld/index.html需要引入mod.js作为模块化加载器，然后通过require([./index])异步加载index模块；<br>helloworld/index.jsx依赖React和HelloMessage模块，写法就是我们熟悉的commonJS的方式；<br>common/components/HelloMessage/index.jsx就是HelloMessage模块，它也依赖React模块；<br>从上面的jsx文件我们可以轻易地发现，不管是react还是jsx文件都没有任何define包装，写法就commonJS一模一样，但是这样在浏览器肯定是跑不起来的，还需要fis帮我们构建模块包装和依赖分析。OK，一切准备就绪，我们就开始执行fis脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fis3 release -d ./</span><br></pre></td></tr></table></figure></p>
+<p>我们来看看staticPub目录下面产出的编译文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#helloworld/index.html&#10;&#60;!DOCTYPE html&#62;&#10;&#60;!DOCTYPE html&#62;&#10;&#60;html&#62;&#10;&#60;head&#62;&#10;&#9;&#60;title&#62;&#32321;&#26143;&#32593; | &#20840;&#29699;&#26368;&#22823;&#38899;&#20048;&#29616;&#22330;&#30452;&#25773;&#24179;&#21488;&#60;/title&#62;&#10;&#9;&#60;meta charset=&#34;utf-8&#34;&#62;&#10;    &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/staticPub/helloworld/index.html_aio.css&#34; /&#62;&#10;&#60;/head&#62;&#10;&#60;body&#62;&#10;&#9;&#60;div id=&#34;helloApp&#34;&#62;&#60;/div&#62;&#10;  &#60;script type=&#34;text/javascript&#34; src=&#34;/staticPub/common/js/lib/mod.js&#34;&#62;&#60;/script&#62;&#10;  &#60;script type=&#34;text/javascript&#34;&#62;/*resourcemap*/&#10;  require.resourceMap(&#123;&#10;    &#34;res&#34;: &#123;&#10;      &#34;static/common/js/mod/react&#34;: &#123;&#10;        &#34;url&#34;: &#34;/staticPub/common/js/mod/react.js&#34;,&#10;        &#34;type&#34;: &#34;js&#34;&#10;      &#125;,&#10;      &#34;static/common/components/HelloMessage/HelloMessage.react&#34;: &#123;&#10;        &#34;url&#34;: &#34;/staticPub/common/components/HelloMessage/HelloMessage.react.js&#34;,&#10;        &#34;type&#34;: &#34;js&#34;,&#10;        &#34;deps&#34;: [&#10;          &#34;static/common/js/mod/react&#34;&#10;        ]&#10;      &#125;,&#10;      &#34;static/helloworld/index&#34;: &#123;&#10;        &#34;url&#34;: &#34;/staticPub/helloworld/index.js&#34;,&#10;        &#34;type&#34;: &#34;js&#34;,&#10;        &#34;deps&#34;: [&#10;          &#34;static/common/js/mod/react&#34;,&#10;          &#34;static/common/components/HelloMessage/HelloMessage.react&#34;&#10;        ]&#10;      &#125;&#10;    &#125;,&#10;    &#34;pkg&#34;: &#123;&#125;&#10;  &#125;);&#10;  require([&#39;static/helloworld/index&#39;]);//&#24322;&#27493;&#21152;&#36733;index.js&#27169;&#22359;&#10;  &#60;/script&#62;&#10;&#60;/body&#62;&#10;&#60;/html&#62;</span><br></pre></td></tr></table></figure></p>
+<p>我们来看看有哪些变化：<br><br>1、index.html中css文件被打包成一个<br>&lt;link rel=”stylesheet” type=”text/css” href=”/static/common/css/style.css”&gt;<br><br>&lt;link rel=”stylesheet” type=”text/css” href=”./css/index.css”&gt;<br><br>变成了一个<br><br>&lt;link rel=”stylesheet” type=”text/css” href=”/staticPub/helloworld/index.html_aio.css” /&gt;<br><br>2、上面的index.html多了一份sourceMap脚本；<br>这是因为在fis3-postpackager-loader的配置中加了useInlineMap:true，可以阅读<a href="https://github.com/fex-team/fis3-postpackager-loader" target="_blank" rel="external">文档</a>了解更多配置。<br><br>我们再来看看helloworld/index.jsx和HellowMessage/HelloMessage.react.jsx的变化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#hellowrold/index.js&#10;define(&#39;static/helloworld/index&#39;, function(require, exports, module) &#123;&#10;  //&#24341;&#20837;React&#21644;HelloMessage&#27169;&#22359;&#10;  var React = require(&#39;static/common/js/mod/react&#39;);&#10;  var HelloMessage = require(&#39;static/common/components/HelloMessage/HelloMessage.react&#39;);&#10;  React.render(&#10;    React.createElement(HelloMessage, &#123;message: &#34;I like commonjs!&#34;&#125;),&#10;    document.getElementById(&#39;helloApp&#39;)&#10;  );&#10;&#125;);&#10;&#10;#common/components/HelloMessage/HelloMessage.react.js&#10;define(&#39;static/common/components/HelloMessage/HelloMessage.react&#39;, function(require, exports, module) &#123;&#10;  var React = require(&#39;static/common/js/mod/react&#39;);&#10;  var HelloMessage = React.createClass(&#123;displayName: &#34;HelloMessage&#34;,&#10;    &#9;render: function() &#123;&#10;  &#9;    return (&#10;  &#9;      &#9;React.createElement(&#34;h1&#34;, null, &#34;Hello, &#34;, this.props.message)&#10;  &#9;    );&#10;  &#9;&#125;&#10;  &#125;);&#10;  module.exports = HelloMessage;&#10;&#125;);&#10;&#10;#common/js/mod/react.js&#10;define(&#39;static/common/js/mod/react&#39;, function(require, exports, module) &#123;&#10; //react code...&#10;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>1、所有的.jsx变成了.js文件，这是fis3-parser-react插件做的；<br>2、js文件都加了define包装，比如”static/helloworld/index”是index模块的moduleId;<br>3、require(‘react’)编译成了require(‘static/common/js/mod/react’)，因为我们通过path配置了别名；<br>我们可以发现，通过fis生成的js代码define的moduleId跟index.html中sourceMap的moduleId是一致的。这样mod.js就能通过resourceMap的依赖关系加载到所有的模块啦！下面是demo在浏览器中的运行结果截图：<br><img src="/img/fis3-module/ND-5--I8-VT412BYGXF8F-G.png" alt="mod.js运行结果"><br>以上就是通过fis3-hook-commonjs实现模块化的过程，当然插件还有一些配置项供开发人员配置，感兴趣的同学可以通过阅读<a href="http://https://github.com/fex-team/fis3-hook-commonjs" target="_blank" rel="external">fis3-hook-commonjs</a>的文档自行了解。</p>
+<h3 id="AMD_u6A21_u5757_u5316"><a href="#AMD_u6A21_u5757_u5316" class="headerlink" title="AMD模块化"></a>AMD模块化</h3><p>首先安装<a href="https://github.com/fex-team/fis3-hook-amd" target="_blank" rel="external">fis3-hook-amd</a>插件，<code>npm install fis3-hook-amd --save</code>。<br>如果我们理解fis3-hook-commonjs的使用方式，换成fis3-hook-amd就很简单，使用方式的唯一的不同就是hook的插件由commonjs变为amd：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fis.hook(&#39;amd&#39;, &#123;&#10;    paths: &#123;&#10;        jquery: &#39;/static/common/js/mod/jquery&#39;,&#10;        react: &#39;/static/common/js/mod/react&#39;&#10;    &#125;&#10;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>当然此时我们的模块化框架要用require.js啦！所以index.html我们要把mod.js换成require.js。<br><br><code>&lt;script type=&quot;text/javascript&quot; src=&quot;/static/common/js/lib/require.js&quot;&gt;&lt;/script&gt;</code><br><br>执行fis3编译：<code>fis3-release -d ./</code><br><br>下面我们看看编译之后的产出文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#helloworld/index.html&#10;&#60;!DOCTYPE html&#62;&#10;&#60;html&#62;&#10;&#60;head&#62;&#10;&#9;&#60;title&#62;&#32321;&#26143;&#32593; | &#20840;&#29699;&#26368;&#22823;&#38899;&#20048;&#29616;&#22330;&#30452;&#25773;&#24179;&#21488;&#60;/title&#62;&#10;&#9;&#60;meta charset=&#34;utf-8&#34;&#62;&#10;    &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/staticPub/helloworld/index.html_aio.css&#34; /&#62;&#10;&#60;/head&#62;&#10;&#60;body&#62;&#10;&#9;&#60;div id=&#34;helloApp&#34;&#62;&#60;/div&#62;&#10;  &#60;script type=&#34;text/javascript&#34; src=&#34;/staticPub/common/js/lib/require.js&#34;&#62;&#60;/script&#62;&#10;  &#60;script type=&#34;text/javascript&#34;&#62;/*resourcemap*/&#10;  require.config(&#123;paths:&#123;&#10;    &#34;static/common/js/mod/jquery&#34;: &#34;/staticPub/common/js/mod/jquery&#34;,&#10;    &#34;static/common/js/mod/react&#34;: &#34;/staticPub/common/js/mod/react&#34;,&#10;    &#34;static/common/components/HelloMessage/HelloMessage.react&#34;: &#34;/staticPub/common/components/HelloMessage/HelloMessage.react&#34;,&#10;    &#34;static/helloworld/index&#34;: &#34;/staticPub/helloworld/index&#34;&#10;  &#125;&#125;);&#10;  require([&#39;static/helloworld/index&#39;]);//&#24322;&#27493;&#21152;&#36733;index.js&#27169;&#22359;&#10;&#60;/script&#62;&#10;&#60;/body&#62;&#10;&#60;/html&#62;&#10;&#10;#helloworld/index.js&#10;define(&#39;static/helloworld/index&#39;, [&#39;require&#39;, &#39;exports&#39;, &#39;module&#39;, &#39;static/common/js/mod/react&#39;, &#39;static/common/components/HelloMessage/HelloMessage.react&#39;], function(require, exports, module) &#123;&#10;  //&#24341;&#20837;React&#21644;HelloMessage&#27169;&#22359;&#10;  var React = require(&#39;static/common/js/mod/react&#39;);&#10;  var HelloMessage = require(&#39;static/common/components/HelloMessage/HelloMessage.react&#39;);&#10;  React.render(&#10;    React.createElement(HelloMessage, &#123;message: &#34;I like AMD!&#34;&#125;),&#10;    document.getElementById(&#39;helloApp&#39;)&#10;  );&#10;&#125;);&#10;&#10;#common/components/HelloMessage/HelloMessage.js&#10;define(&#39;static/common/components/HelloMessage/HelloMessage.react&#39;, [&#39;require&#39;, &#39;exports&#39;, &#39;module&#39;, &#39;static/common/js/mod/react&#39;], function(require, exports, module) &#123;&#10;  var React = require(&#39;static/common/js/mod/react&#39;);&#10;  var HelloMessage = React.createClass(&#123;displayName: &#34;HelloMessage&#34;,&#10;    &#9;render: function() &#123;&#10;  &#9;    return (&#10;  &#9;      &#9;React.createElement(&#34;h1&#34;, null, &#34;Hello, &#34;, this.props.message)&#10;  &#9;    );&#10;  &#9;&#125;&#10;  &#125;);&#10;  module.exports = HelloMessage;&#10;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>注意，index.html内嵌脚本生成的sourceMap变成下面的格式，因为是AMD规范嘛：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require.config(&#123;paths:&#123;&#10;    &#34;static/common/js/mod/jquery&#34;: &#34;/staticPub/common/js/mod/jquery&#34;,&#10;    &#34;static/common/js/mod/react&#34;: &#34;/staticPub/common/js/mod/react&#34;,&#10;    &#34;static/common/components/HelloMessage/HelloMessage.react&#34;: &#34;/staticPub/common/components/HelloMessage/HelloMessage.react&#34;,&#10;    &#34;static/helloworld/index&#34;: &#34;/staticPub/helloworld/index&#34;&#10;  &#125;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>js文件也被包装成了遵循AMD规范的define形式。下面是demo执行结果：<br><img src="/img/fis3-module/XP-M---XE-W0-EZ2-4-UJ-U.png" alt="fis3-hook-amd"></p>
+<h3 id="CMD_u6A21_u5757_u5316"><a href="#CMD_u6A21_u5757_u5316" class="headerlink" title="CMD模块化"></a>CMD模块化</h3><p>安装<a href="https://github.com/fex-team/fis3-hook-cmd" target="_blank" rel="external">fis3-hook-cmd</a>插件，<code>npm install fis3-hook-cmd --save</code>。<br>该fis-conf.js配置文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/*&#25351;&#23450;&#27169;&#22359;&#21270;&#25554;&#20214;*/&#10;fis.hook(&#39;cmd&#39;, &#123;&#10;    paths: &#123;&#10;        jquery: &#39;/static/common/js/mod/jquery&#39;,&#10;        react: &#39;/static/common/js/mod/react&#39;&#10;    &#125;&#10;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>改index.html模块加载器：<br><br><code>&lt;script type=&quot;text/javascript&quot; src=&quot;/static/common/js/lib/sea.js&quot;&gt;&lt;/script&gt;</code><br><br>异步加载入口index模块改为：<br><br><code>seajs.use([&#39;./index&#39;]);//异步加载index.js模块</code><br><br>执行fis3编译：<code>fis3-release -d ./</code><br><br>注意：运行完成之后你会发现程序无法运行，因为react模块找不到，为什么呢？一般情况下，我们下载的开源框架都自己实现了amd包装，比如react的源码：<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/**&#10; * React v0.13.0&#10; */&#10;(function(f) &#123;&#10;&#9;if (typeof exports === &#34;object&#34; &#38;&#38; typeof module !== &#34;undefined&#34;) &#123;&#10;&#9;&#9;module.exports = f()&#10;        //&#27880;&#24847;&#30475;&#36825;&#37324;&#65292;&#36825;&#23601;&#26159;&#40664;&#35748;&#26159;&#29992;amd&#10;&#9;&#125; else if (typeof define === &#34;function&#34; &#38;&#38; define.amd) &#123;&#10;&#9;&#9;define([], f)&#10;&#9;&#125; else &#123;&#10;&#9;&#9;var g;&#10;&#9;&#9;if (typeof window !== &#34;undefined&#34;) &#123;&#10;&#9;&#9;&#9;g = window&#10;&#9;&#9;&#125; else if (typeof global !== &#34;undefined&#34;) &#123;&#10;&#9;&#9;&#9;g = global&#10;&#9;&#9;&#125; else if (typeof self !== &#34;undefined&#34;) &#123;&#10;&#9;&#9;&#9;g = self&#10;&#9;&#9;&#125; else &#123;&#10;&#9;&#9;&#9;g = this&#10;&#9;&#9;&#125;&#10;&#9;&#9;g.React = f()&#10;&#9;&#125;&#10;&#125;)(function() &#123;&#10;&#9;var define, module, exports;&#10;        //&#36825;&#37324;&#25165;&#26159;react&#30340;&#20869;&#37096;&#23454;&#29616;&#65292;&#28304;&#30721;&#20250;&#36820;&#22238;&#19968;&#20010;React&#23545;&#35937;&#10;&#9;return React;&#10;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>对于这类框架fis3-hook-amd会识别define.amd并将define([], f)替换成define(‘static/common/js/mod/react’, [], f)，但是我们运行fis3-hook-cmd就无法识别了，所以就无法通过define定义模块，define([], f)不会有任何变化。我们把define.amd改成define.cmd再运行一下fis就会发现了define([], f)变成了define(‘static/common/js/mod/react’, [], f)。</p>
+<p>再看看编译之后的产出文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#helloworld/index.html&#10;&#60;!DOCTYPE html&#62;&#10;&#60;html&#62;&#10;&#60;head&#62;&#10;&#9;&#60;title&#62;&#32321;&#26143;&#32593; | &#20840;&#29699;&#26368;&#22823;&#38899;&#20048;&#29616;&#22330;&#30452;&#25773;&#24179;&#21488;&#60;/title&#62;&#10;&#9;&#60;meta charset=&#34;utf-8&#34;&#62;&#10;    &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/staticPub/helloworld/index.html_aio.css&#34; /&#62;&#10;&#60;/head&#62;&#10;&#60;body&#62;&#10;&#9;&#60;div id=&#34;helloApp&#34;&#62;&#60;/div&#62;&#10;&#9;&#60;script type=&#34;text/javascript&#34; src=&#34;/staticPub/common/js/lib/sea.js&#34;&#62;&#60;/script&#62;&#10;&#9;&#60;script type=&#34;text/javascript&#34;&#62;/*resourcemap*/&#10;&#9;seajs.config(&#123;alias:&#123;&#10;&#9;  &#34;static/common/js/mod/react&#34;: &#34;/staticPub/common/js/mod/react&#34;,&#10;&#9;  &#34;static/common/components/HelloMessage/HelloMessage.react&#34;: &#34;/staticPub/common/components/HelloMessage/HelloMessage.react&#34;,&#10;&#9;  &#34;static/helloworld/index&#34;: &#34;/staticPub/helloworld/index&#34;&#10;&#9;&#125;&#125;);&#10;&#10;&#9;// require([&#39;./index&#39;]);//&#24322;&#27493;&#21152;&#36733;index.js&#27169;&#22359;&#10;&#9;seajs.use([&#39;static/helloworld/index&#39;]);//&#24322;&#27493;&#21152;&#36733;index.js&#27169;&#22359;&#10;&#60;/script&#62;&#10;&#60;/body&#62;&#10;&#60;/html&#62;&#10;&#10;#helloworld/index.js&#10;define(&#39;static/helloworld/index&#39;, [&#39;static/common/js/mod/react&#39;, &#39;static/common/components/HelloMessage/HelloMessage.react&#39;], function(require, exports, module) &#123;&#10;  //&#24341;&#20837;React&#21644;HelloMessage&#27169;&#22359;&#10;  var React = require(&#39;static/common/js/mod/react&#39;);&#10;  var HelloMessage = require(&#39;static/common/components/HelloMessage/HelloMessage.react&#39;);&#10;  React.render(&#10;    React.createElement(HelloMessage, &#123;message: &#34;I like CMD!&#34;&#125;),&#10;    document.getElementById(&#39;helloApp&#39;)&#10;  );&#10;&#125;);&#10;&#10;#common/components/HelloMessage/HelloMessage.js&#10;define(&#39;static/common/components/HelloMessage/HelloMessage.react&#39;, [&#39;static/common/js/mod/react&#39;], function(require, exports, module) &#123;&#10;  var React = require(&#39;static/common/js/mod/react&#39;);&#10;  var HelloMessage = React.createClass(&#123;displayName: &#34;HelloMessage&#34;,&#10;    &#9;render: function() &#123;&#10;  &#9;    return (&#10;  &#9;      &#9;React.createElement(&#34;h1&#34;, null, &#34;Hello, &#34;, this.props.message)&#10;  &#9;    );&#10;  &#9;&#125;&#10;  &#125;);&#10;  module.exports = HelloMessage;&#10;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>再来看看index.html内嵌脚本生成的sourceMap：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">seajs.config(&#123;alias:&#123;&#10;&#9;  &#34;static/common/js/mod/react&#34;: &#34;/staticPub/common/js/mod/react&#34;,&#10;&#9;  &#34;static/common/components/HelloMessage/HelloMessage.react&#34;: &#34;/staticPub/common/components/HelloMessage/HelloMessage.react&#34;,&#10;&#9;  &#34;static/helloworld/index&#34;: &#34;/staticPub/helloworld/index&#34;&#10;&#9;&#125;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>查看结果：<br><img src="/img/fis3-module/5ES---W92T--T-7ABK-VA5R.png" alt="fis3-hook-cmd"></p>
+<p>因为工程化，让模块化变得简单，可复用！你不用在乎使用你模块的人是使用commonJS还是seaJS还是requireJS作为模块加载器，你只需要专心开发你的模块，并通过require加载你要依赖的模块即可。怎么样？是不是很爽？那就用起来吧~<br>有兴趣的同学可以看一下demo：<a href="https://github.com/garygchai/fis3-module-demo/tree/master" target="_blank" rel="external">fis3-mudule-demo</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/02/24/fis3-module/">fis3工程化中的模块化开发</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Gary Gao 的个人博客">Gary Gao</a></p>
+        <p><span>发布时间:</span>2016年02月24日 - 16时28分</p>
+        <p><span>最后更新:</span>2016年02月24日 - 16时28分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/02/24/fis3-module/" title="fis3工程化中的模块化开发">http://garygchai.github.io/2016/02/24/fis3-module/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://garygchai.github.io/2016/02/24/fis3-module/　　作者: Gary Gao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/02/24/cross-domain-post/">
+                    聊聊如何像jsonp一样提交post跨域请求
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#commonJS_u6A21_u5757_u5316"><span class="toc-number">1.</span> <span class="toc-text">commonJS模块化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AMD_u6A21_u5757_u5316"><span class="toc-number">2.</span> <span class="toc-text">AMD模块化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CMD_u6A21_u5757_u5316"><span class="toc-number">3.</span> <span class="toc-text">CMD模块化</span></a></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+
+
+
+    <div class="share">
+    <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+    <a href="#" class="bds_copy" data-cmd="copy" title="复制网址"></a>
+    <a href="#" class="bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+    </div>
+    <script>
+        window._bd_share_config={
+            "common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+</div>
+
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/02/24/cross-domain-post/" title="下一篇: 聊聊如何像jsonp一样提交post跨域请求">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/fis3-module/">fis3工程化中的模块化开发</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/cross-domain-post/">聊聊如何像jsonp一样提交post跨域请求</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/what-is-bem/">BEM是什么鬼？</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/use-localStorage+userData-instead-of-Cookie/">告别Cookie，拥抱localStorage+userData</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/async-js-debug-by-chrome-Sources/">异步加载的JS如何在chrome浏览器断点调试？</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/build-private-npm-by-sinopia/">使用sinopia五步完成本地npm搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/hello-world/">Hello World</a></li></ul>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2016 Gary Gao
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的静态博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减双栏 Hexo 博客主题">Yelee</a> by MOxFIVE
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >本站到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

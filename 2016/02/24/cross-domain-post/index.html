@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>聊聊如何像jsonp一样提交post跨域请求 | GaryGao&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="对于跨域的GET请求，我们最常用的是jsonp的方式，jQuery的ajax方法也对jsonp也有很好的封装，我们甚至可以利用http.getJSONP(url, data, callback)这样简洁的方式让开发人员只关注请求的url，数据以及回调方法。但是如果传输的数据量比较大，或者数据信息比较敏感的话，则需要POST大神出手了。那么跨域的post请求是否也能做到如此优雅地调用方式呢？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊如何像jsonp一样提交post跨域请求">
+<meta property="og:url" content="http://garygchai.github.io/2016/02/24/cross-domain-post/index.html">
+<meta property="og:site_name" content="GaryGao's blog">
+<meta property="og:description" content="对于跨域的GET请求，我们最常用的是jsonp的方式，jQuery的ajax方法也对jsonp也有很好的封装，我们甚至可以利用http.getJSONP(url, data, callback)这样简洁的方式让开发人员只关注请求的url，数据以及回调方法。但是如果传输的数据量比较大，或者数据信息比较敏感的话，则需要POST大神出手了。那么跨域的post请求是否也能做到如此优雅地调用方式呢？">
+<meta property="og:updated_time" content="2016-02-24T08:20:24.905Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊聊如何像jsonp一样提交post跨域请求">
+<meta name="twitter:description" content="对于跨域的GET请求，我们最常用的是jsonp的方式，jQuery的ajax方法也对jsonp也有很好的封装，我们甚至可以利用http.getJSONP(url, data, callback)这样简洁的方式让开发人员只关注请求的url，数据以及回调方法。但是如果传输的数据量比较大，或者数据信息比较敏感的话，则需要POST大神出手了。那么跨域的post请求是否也能做到如此优雅地调用方式呢？">
+  
+    <link rel="alternative" href="/atom.xml" title="GaryGao&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" type="text/css">
+  
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/my-avatar.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/">Gary Gao</a></h1>
+        </hgroup>
+
+        
+                
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:garygchai@gmail.com" title="Email"></a></li>
+                            
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/garygchai/" title="GitHub"></a></li>
+                            
+                                <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/FIS/" style="font-size: 10px;">FIS</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NPM/" style="font-size: 10px;">NPM</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">没有最好，只有更好！</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Gary Gao</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/my-avatar.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Gary Gao</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <li id="Email"><a class="Email" target="_blank" href="mailto:garygchai@gmail.com" title="Email"></a></li>
+                            
+                                <li id="GitHub"><a class="GitHub" target="_blank" href="https://github.com/garygchai/" title="GitHub"></a></li>
+                            
+                                <li id="RSS"><a class="RSS" target="_blank" href="/atom.xml" title="RSS"></a></li>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-cross-domain-post" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/02/24/cross-domain-post/" class="article-date">
+      <time datetime="2016-02-24T08:20:24.905Z" itemprop="datePublished">2016-02-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      聊聊如何像jsonp一样提交post跨域请求
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/前端攻城/">前端攻城</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>对于跨域的GET请求，我们最常用的是jsonp的方式，jQuery的ajax方法也对jsonp也有很好的封装，我们甚至可以利用http.getJSONP(url, data, callback)这样简洁的方式让开发人员只关注请求的url，数据以及回调方法。但是如果传输的数据量比较大，或者数据信息比较敏感的话，则需要POST大神出手了。那么跨域的post请求是否也能做到如此优雅地调用方式呢？</p>
+<a id="more"></a>
+<p>现在假设在a.com有个login.html页面，我们要用户的用户名密码提交到b.com/post接口做校验，校验结果返回a.com/login.html做提示。我们也来打造这样一个方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/* &#36328;&#22495;post&#35831;&#27714;&#26041;&#27861;&#10; * url &#35831;&#27714;&#22320;&#22336;&#10; * data post&#34920;&#21333;&#25968;&#25454;&#10; * callback &#22238;&#35843;&#26041;&#27861;&#10; */&#10;http.postJSONP = function(url, data, callback) &#123;&#10;    //TO DO&#10;&#125;&#10;&#10;//&#35831;&#27714;&#26041;&#24335;&#10;http.postJSONP(&#39;b.com/post&#39;, &#123;&#10;&#9;name: &#34;garygao&#34;,&#10;&#9;password: &#34;******&#34;&#10;&#125;, function(json) &#123;&#10;&#9;//TO DO json&#10;&#125;);&#10;&#10;//&#25110;&#32773;&#20687;jsonp&#19968;&#26679;&#10;http.postJSONP(&#39;b.com/post?postcallback=xxoo&#39;, &#123;&#10;&#9;name: &#34;garygao&#34;,&#10;&#9;password: &#34;******&#34;&#10;&#125;);&#10;//postcallback&#22238;&#35843;&#26041;&#27861;&#10;function xxoo(json) &#123;&#10;&#9;//TO DO json&#10;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>要实现这样一个方法，我们有两个难点：<br><br>1、如何实现跨域的post请求？<br>2、如何捕获回调数据，优雅地执行？</p>
+<h3 id="u5982_u4F55_u5B9E_u73B0_u8DE8_u57DFPOST_u8BF7_u6C42_uFF1F"><a href="#u5982_u4F55_u5B9E_u73B0_u8DE8_u57DFPOST_u8BF7_u6C42_uFF1F" class="headerlink" title="如何实现跨域POST请求？"></a>如何实现跨域POST请求？</h3><p>1、CORS<br>利用CORS，让目标服务器设置标头”Access-Control-Allow-Origin：xxx.com “，表示允许设定的域向我们的服务端提交请求。<br><br>优点：W3C标准，配置简单；<br><br>缺点：需要服务端配合，IE67不支持。<br></p>
+<p>2、Server Proxy<br>当前域实现一个代理，所有向外部域名发送的请求都径由该代理中转。<br><br>缺点：每个使用方都需要部署代理，数据中转低效，对js有侵入。<br></p>
+<p>3、Flash Proxy<br>服务端部署跨域策略文件crossdomain.xml，页面利用不可见的swf跨域post提交数据实现跨域通信。<br><br>优点：兼容性好，传输数据量大；<br><br>缺点：依赖flash。<br></p>
+<p>4、Invisible Iframe<br>概述：通过js动态生成不可见表单和iframe，将表单的target设为iframe的name以此通过iframe做post提交。<br><br>优点：兼容性佳，原生JS即可完全实现；<br><br>缺点：无法直接读取响应内容。<br></p>
+<p>综合对比四种方式，还是第四种比较给力，兼容性好，不需要做服务器配置也不依赖Flash文件；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/* &#36328;&#22495;post&#35831;&#27714;&#26041;&#27861;&#10; * url &#35831;&#27714;&#22320;&#22336;&#10; * data post&#34920;&#21333;&#25968;&#25454;&#10; * callback &#22238;&#35843;&#26041;&#27861;&#10; */&#10;http.postJSONP = function(url, data, callback) &#123;&#10;            var form = document.createElement(&#34;form&#34;);&#10;&#9;&#9;&#9;form.id = form.name = &#39;postForm&#39;;&#10;&#10;&#9;&#9;&#9;//&#21019;&#24314;&#34920;&#21333;&#25968;&#25454;&#10;&#9;&#9;&#9;if (data) &#123;&#10;&#9;&#9;&#9;&#9;for(var key in data) &#123;&#10;&#9;&#9;&#9;&#9;&#9;var input = document.createElement(&#34;input&#34;);&#10;&#9;&#9;&#9;&#9;&#9;input.type = &#34;hidden&#34;;&#10;&#9;&#9;&#9;&#9;&#9;input.name = key;&#10;&#9;&#9;&#9;&#9;&#9;input.value = data[key];&#10;&#9;&#9;&#9;&#9;&#9;form.appendChild(input);&#10;&#9;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#9;&#125;&#10;&#10;&#9;&#9;&#9;//&#21019;&#24314;iframe&#10;&#9;&#9;&#9;var iframe = null;&#10;&#9;&#9;&#9;//try&#38;catch&#26159;&#20026;&#20102;&#35299;&#20915;IE67&#21019;&#24314;iframe&#26032;&#24320;&#31383;&#38382;&#39064;&#10;&#9;&#9;&#9;try &#123;&#10;&#9;&#9;&#9;  iframe = document.createElement(&#39;&#60;iframe name=&#34;postIframe&#34;&#62;&#39;);&#10;&#9;&#9;&#9;&#125; catch (ex) &#123;&#10;&#9;&#9;&#9;  iframe = document.createElement(&#39;iframe&#39;);&#10;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#9;iframe.id = iframe.name = &#34;postIframe&#34;;&#10;&#9;&#9;&#9;iframe.width = &#34;1&#34;;&#10;&#9;&#9;&#9;iframe.height = &#34;1&#34;;&#10;&#9;&#9;&#9;iframe.style.display = &#34;none&#34;;&#10;&#9;&#9;&#9;document.body.appendChild(iframe);&#10;&#10;&#9;&#9;&#9;//&#34920;&#21333;&#25552;&#20132;&#10;&#9;&#9;&#9;document.body.appendChild(form);&#10;&#9;&#9;    form.action = url;&#10;&#9;&#9;    form.target = iframe.name;&#10;&#9;&#9;&#9;form.method = &#34;post&#34;;&#10;&#9;&#9;&#9;form.submit();&#10;&#9;&#9;&#125;</span><br></pre></td></tr></table></figure>
+<p>看上面的代码，隐藏Iframe+form实现的POST原理其实很简单，让form的target指向iframe，这样表单提交的时候只刷新iframe的body，这样就像Ajax一样实现了页面无刷新请求。至此，我们就利用隐藏iframe和form可以跨域POST的特性实现了跨域POST请求。但是我们如何处理数据回调呢？</p>
+<h3 id="u5982_u4F55_u5904_u7406_u901A_u8FC7Iframe+form_u5B9E_u73B0_u7684POST_u8BF7_u6C42_u6570_u636E_u56DE_u8C03_uFF1F"><a href="#u5982_u4F55_u5904_u7406_u901A_u8FC7Iframe+form_u5B9E_u73B0_u7684POST_u8BF7_u6C42_u6570_u636E_u56DE_u8C03_uFF1F" class="headerlink" title="如何处理通过Iframe+form实现的POST请求数据回调？"></a>如何处理通过Iframe+form实现的POST请求数据回调？</h3><p>我们借助iframe，POST请求之后的response也都在iframe内部，我们如何获取iframe内部返回的数据对象？这个我们可以借助window.name，关于window.name如何解决跨域的办法可以参考一下这篇文章<a href="http://www.planabc.net/2008/09/01/window/name/transport。" target="_blank" rel="external">http://www.planabc.net/2008/09/01/window/name/transport。</a><br><br>文中我得知，<strong>name 在浏览器环境中是window对象的一个属性，且当在frame中加载新页面(也可以是跨域页面)时，name 的属性值依旧保持不变，并且name可以保存2M的数据量。</strong><br><br>实现思路：将后端返回的数据写入window.name,然后将iframe的location刷新为源域的一个空白页面，这样iframe就跟我们页面同域了，因为window.name在iframe中加载新页面数据不会丢失，所以就可以通过iframe.contentWindow.name获取到POST接口返回的数据。<br><br>直接上代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http.postJSONP = function(url, data, fn) &#123;&#10;&#9;var form = document.createElement(&#34;form&#34;);&#10;&#9;form.id = form.name = &#39;postForm&#39;;&#10;&#10;&#9;//&#21019;&#24314;&#34920;&#21333;&#25968;&#25454;&#10;&#9;if (data) &#123;&#10;&#9;&#9;for(var key in data) &#123;&#10;&#9;&#9;&#9;var input = document.createElement(&#34;input&#34;);&#10;&#9;&#9;&#9;input.type = &#34;hidden&#34;;&#10;&#9;&#9;&#9;input.name = key;&#10;&#9;&#9;&#9;input.value = data[key];&#10;&#9;&#9;&#9;form.appendChild(input);&#10;&#9;&#9;&#125;&#10;&#9;&#125;&#10;&#10;&#9;//&#21019;&#24314;iframe&#10;&#9;var iframe = null;&#10;&#9;//try&#38;catch&#26159;&#20026;&#20102;&#35299;&#20915;IE67&#21019;&#24314;iframe&#26032;&#24320;&#31383;&#38382;&#39064;&#10;&#9;try &#123;&#10;&#9;  iframe = document.createElement(&#39;&#60;iframe name=&#34;postIframe&#34;&#62;&#39;);&#10;&#9;&#125; catch (ex) &#123;&#10;&#9;  iframe = document.createElement(&#39;iframe&#39;);&#10;&#9;&#125;&#10;&#9;iframe.id = iframe.name = &#34;postIframe&#34;;&#10;&#9;iframe.width = &#34;1&#34;;&#10;&#9;iframe.height = &#34;1&#34;;&#10;&#9;iframe.style.display = &#34;none&#34;;&#10;&#9;document.body.appendChild(iframe);&#10;&#10;&#9;//&#34920;&#21333;&#25552;&#20132;&#10;&#9;document.body.appendChild(form);&#10;    form.action = url;&#10;    form.target = iframe.name;&#10;&#9;form.method = &#34;post&#34;;&#10;&#9;form.submit();&#10;    &#10;    //&#20107;&#20214;&#22788;&#29702;&#10;    if(iframe.attachEvent)&#123;&#10;&#9;&#9;iframe.attachEvent(&#34;onload&#34;, _loadFn);&#10;&#9;&#125;else&#123;&#10;&#9;&#9;iframe.onload = _loadFn;&#10;&#9;&#125;&#10;&#10;&#9;//&#35760;&#24405;iframe&#30340;&#21152;&#36733;&#29366;&#24577;&#10;&#9;iframe.state = 0;&#10;&#9;function _loadFn() &#123;&#10;&#9;&#9;if (iframe.state === 1) &#123;&#10;&#9;&#9;&#9;var data = &#39;&#39;;&#10;&#9;&#9;&#9;//&#33719;&#21462;window.name&#20445;&#23384;&#30340;&#25968;&#25454;&#10;            try&#123;&#10;                data = iframe.contentWindow.name;&#10;            &#125;catch(e)&#123;&#10;            &#9;console.log(e);&#10;            &#125;&#10;&#10;            var json = data;&#10;            try &#123;&#10;            &#9;json = Kg.JSON.parse(data);&#10;            &#125; catch(e)&#123;&#125;&#10;&#10;            //&#25191;&#34892;&#22238;&#35843;&#26041;&#27861;&#10;            fn &#38;&#38; fn(json);&#10;            //iframe&#28165;&#38500;&#10;            iframe.onload = null; &#10;&#9;&#9;&#9;document.body.removeChild(iframe);&#10;        &#125; else if (iframe.state === 0) &#123;&#10;        &#9;//form&#25552;&#20132;&#23436;&#25104;&#20043;&#21518;&#65292;&#23558;location&#32622;&#20026;&#21516;&#22495;&#10;            state = 1;&#10;            //proxy.html&#21482;&#26159;&#19968;&#20010;&#28304;&#22495;&#37324;&#30340;&#19968;&#20010;&#31354;&#30333;&#39029;&#38754;&#65292;&#10;            //&#22914;&#26524;&#19981;&#32771;&#34385;IE&#65292;&#20063;&#21487;&#20197;&#36825;&#26679;&#65306;iframe.contentWindow.location = &#34;about:blank&#34;;&#10;            iframe.contentWindow.location = &#34;/static/html/proxy.html&#34;;&#10;        &#125;&#10;&#9;&#125;&#10;    return false;&#10;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>为了在接口回调中给iframe中的window.name赋值，后端的返回需要这样写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return &#34;&#60;script&#62;window.name=\&#34;&#34;.addslashes(json_encode($result)).&#34;\&#34;&#60;/script&#62;&#34;;</span><br></pre></td></tr></table></figure></p>
+<p>&lt;script&gt;是为了给window.name的赋值提供script执行环境。<br><br>OK，现在我们的请求方式可以是这样了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">//post&#35831;&#27714;&#10;http.postJSONP(&#39;b.com/post&#39;, &#123;&#10;&#9;name: &#34;garygao&#34;,&#10;&#9;password: &#34;******&#34;&#10;&#125;, function(json) &#123;&#10;&#9;//TO DO json&#10;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>为了更加贴近jsonp的请求的方式，我们还需要解析请求url拿到postcallback的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http.postJSONP = function(url, data, fn) &#123;&#10;&#9;var form = document.createElement(&#34;form&#34;);&#10;&#9;form.id = form.name = &#39;postForm&#39;;&#10;&#10;&#9;//&#21019;&#24314;&#34920;&#21333;&#25968;&#25454;&#10;&#9;if (data) &#123;&#10;&#9;&#9;for(var key in data) &#123;&#10;&#9;&#9;&#9;var input = document.createElement(&#34;input&#34;);&#10;&#9;&#9;&#9;input.type = &#34;hidden&#34;;&#10;&#9;&#9;&#9;input.name = key;&#10;&#9;&#9;&#9;input.value = data[key];&#10;&#9;&#9;&#9;form.appendChild(input);&#10;&#9;&#9;&#125;&#10;&#9;&#125;&#10;&#10;&#9;//&#21019;&#24314;iframe&#10;&#9;var iframe = null;&#10;&#9;//try&#38;catch&#26159;&#20026;&#20102;&#35299;&#20915;IE67&#21019;&#24314;iframe&#26032;&#24320;&#31383;&#38382;&#39064;&#10;&#9;try &#123;&#10;&#9;  iframe = document.createElement(&#39;&#60;iframe name=&#34;postIframe&#34;&#62;&#39;);&#10;&#9;&#125; catch (ex) &#123;&#10;&#9;  iframe = document.createElement(&#39;iframe&#39;);&#10;&#9;&#125;&#10;&#9;iframe.id = iframe.name = &#34;postIframe&#34;;&#10;&#9;iframe.width = &#34;1&#34;;&#10;&#9;iframe.height = &#34;1&#34;;&#10;&#9;iframe.style.display = &#34;none&#34;;&#10;&#9;document.body.appendChild(iframe);&#10;&#10;&#9;//&#34920;&#21333;&#25552;&#20132;&#10;&#9;document.body.appendChild(form);&#10;    form.action = url;&#10;    form.target = iframe.name;&#10;&#9;form.method = &#34;post&#34;;&#10;&#9;form.submit();&#10;    &#10;    //&#20107;&#20214;&#22788;&#29702;&#10;    if(iframe.attachEvent)&#123;&#10;&#9;&#9;iframe.attachEvent(&#34;onload&#34;, _loadFn);&#10;&#9;&#125;else&#123;&#10;&#9;&#9;iframe.onload = _loadFn;&#10;&#9;&#125;&#10;&#10;&#9;//&#35760;&#24405;iframe&#30340;&#21152;&#36733;&#29366;&#24577;&#10;&#9;iframe.state = 0;&#10;&#9;function _loadFn() &#123;&#10;&#9;&#9;if (iframe.state === 1) &#123;&#10;&#9;&#9;&#9;var data = &#39;&#39;;&#10;&#9;&#9;&#9;//&#33719;&#21462;window.name&#20445;&#23384;&#30340;&#25968;&#25454;&#10;            try&#123;&#10;                data = iframe.contentWindow.name;&#10;            &#125;catch(e)&#123;&#10;            &#9;console.log(e);&#10;            &#125;&#10;&#10;            var json = data;&#10;            try &#123;&#10;            &#9;json = Kg.JSON.parse(data);&#10;            &#125; catch(e)&#123;&#125;&#10;&#10;            //&#25191;&#34892;&#22238;&#35843;&#26041;&#27861;&#10;            _callback(json);&#10;            //iframe&#28165;&#38500;&#10;            iframe.onload = null; &#10;&#9;&#9;&#9;document.body.removeChild(iframe);&#10;        &#125; else if (iframe.state === 0) &#123;&#10;        &#9;//form&#25552;&#20132;&#23436;&#25104;&#20043;&#21518;&#65292;&#23558;location&#32622;&#20026;&#21516;&#22495;&#10;            state = 1;&#10;            iframe.removeAttribute(&#39;name&#39;);//&#35299;&#20915;IE10+&#33719;&#21462;&#19981;&#21040;window.name&#30340;&#38382;&#39064;&#10;            iframe.contentWindow.location = &#34;/static/html/blank.html&#34;;&#10;        &#125;&#10;&#9;&#125;&#10;&#9;function _callback(json) &#123;&#10;&#9;&#9;//&#40664;&#35748;&#25191;&#34892;&#20256;&#20837;&#30340;&#22238;&#35843;&#26041;&#27861;&#10;&#9;&#9;if (fn &#38;&#38; typeof fn === &#34;function&#34;) &#123;&#10;&#9;&#9;&#9;fn(json);&#10;&#9;&#9;&#125; else &#123;&#10;&#9;&#9;&#9;//&#27809;&#26377;&#22238;&#35843;&#26041;&#27861;&#21017;&#35299;&#26512;postcallback&#10;&#9;&#9;&#9;var svalue = url.match(new RegExp(&#34;[\?\&#38;]postcallback=([^\&#38;]*)(\&#38;?)&#34;));&#10;&#9;&#9;&#9;fn = window[svalue ? svalue[1] : svalue];&#10;&#9;&#9;&#9;if (fn &#38;&#38; typeof fn === &#34;function&#34;) &#123;&#10;&#9;&#9;&#9;&#9;fn(json);&#10;&#9;&#9;&#9;&#125;&#10;&#9;&#9;&#125;&#10;&#9;&#125;&#10;    return false;&#10;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>大功告成，现在我们可以像jsonpcallback那样通过传入postcallback的方式使用方法啦：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http.postJSONP(&#39;b.com/post?postcallback=xxoo&#39;, &#123;&#10;&#9;name: &#34;garygao&#34;,&#10;&#9;password: &#34;******&#34;&#10;&#125;);&#10;//postcallback&#22238;&#35843;&#26041;&#27861;&#10;function xxoo(json) &#123;&#10;&#9;//TO DO json&#10;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>等等！在测试IE10+的时候，发现iframe.contentWindow.name的值竟然等于postIframe，如此一来就获取不到真实的数据结果了，悲剧~通过调试发现，iframe中如果设置了name属性，iframe.contentWindow.name拿到的值就等于iframe.name的值，所以在获取name值的时候，要把iframe的那么属性干掉，iframe.removeAttribute(‘name’)这样就OK啦~</p>
+<h3 id="u5C0F_u7ED3"><a href="#u5C0F_u7ED3" class="headerlink" title="小结"></a>小结</h3><p>文中提到跨域方案无非就是利用了两种比较经典的解决方式，即隐藏iframe+form和window.name，相对于其他方式，文中的方案算是兼容性比较强的方式了，也无需修改服务器配置和引入额外的Flash文件，唯一不太友好的地方是后端的返回方式比较奇怪，要用&lt;script&gt;包住window.name的赋值，但是这样做也是为了前端更加友好地处理回调数据。<br><br>关于跨域的好文推荐：<br><a href="http://www.cnblogs.com/rainman/archive/2011/02/20/1959325.html" target="_blank" rel="external">http://www.cnblogs.com/rainman/archive/2011/02/20/1959325.html</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/02/24/cross-domain-post/">聊聊如何像jsonp一样提交post跨域请求</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Gary Gao 的个人博客">Gary Gao</a></p>
+        <p><span>发布时间:</span>2016年02月24日 - 16时20分</p>
+        <p><span>最后更新:</span>2016年02月24日 - 16时20分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/02/24/cross-domain-post/" title="聊聊如何像jsonp一样提交post跨域请求">http://garygchai.github.io/2016/02/24/cross-domain-post/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://garygchai.github.io/2016/02/24/cross-domain-post/　　作者: Gary Gao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/02/24/fis3-module/">
+                    fis3工程化中的模块化开发
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/02/24/what-is-bem/">
+                    BEM是什么鬼？
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#u5982_u4F55_u5B9E_u73B0_u8DE8_u57DFPOST_u8BF7_u6C42_uFF1F"><span class="toc-number">1.</span> <span class="toc-text">如何实现跨域POST请求？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u5982_u4F55_u5904_u7406_u901A_u8FC7Iframe+form_u5B9E_u73B0_u7684POST_u8BF7_u6C42_u6570_u636E_u56DE_u8C03_uFF1F"><span class="toc-number">2.</span> <span class="toc-text">如何处理通过Iframe+form实现的POST请求数据回调？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u5C0F_u7ED3"><span class="toc-number">3.</span> <span class="toc-text">小结</span></a></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+
+
+
+    <div class="share">
+    <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+    <a href="#" class="bds_copy" data-cmd="copy" title="复制网址"></a>
+    <a href="#" class="bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+    </div>
+    <script>
+        window._bd_share_config={
+            "common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    </script>
+</div>
+
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/02/24/fis3-module/" title="上一篇: fis3工程化中的模块化开发">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/02/24/what-is-bem/" title="下一篇: BEM是什么鬼？">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/fis3-module/">fis3工程化中的模块化开发</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/cross-domain-post/">聊聊如何像jsonp一样提交post跨域请求</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/what-is-bem/">BEM是什么鬼？</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/use-localStorage+userData-instead-of-Cookie/">告别Cookie，拥抱localStorage+userData</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/async-js-debug-by-chrome-Sources/">异步加载的JS如何在chrome浏览器断点调试？</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/build-private-npm-by-sinopia/">使用sinopia五步完成本地npm搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/hello-world/">Hello World</a></li></ul>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2016 Gary Gao
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的静态博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减双栏 Hexo 博客主题">Yelee</a> by MOxFIVE
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >本站到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
